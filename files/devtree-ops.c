@@ -42,11 +42,9 @@ static int get_devtree_address_from_parttable(struct spi_desc_t *desc, off_t *dt
     int rv;
     off_t pt_offset;
     if((rv = get_pt_offset(desc, &pt_offset)) != 0) return rv;
-printf("pt_offset=%d (%x)\n",pt_offset,pt_offset);
     if((rv = spi_read(desc, &pt_header, pt_offset, sizeof(pt_header))) != 0) return rv;
     uint32_t crc = pt_header.pt_cksum.crc32;
     memset(&pt_header.pt_cksum, 0, sizeof(pt_header.pt_cksum));
-printf("%x, %x\n",crc, crc32(crc32(0L, Z_NULL, 0), (Bytef *)&pt_header, sizeof(pt_header)));
 //    if (crc != crc32(crc32(0L, Z_NULL, 0), (Bytef *)&pt_header, sizeof(pt_header))) return ERR_FPT_CKSUM;
     // [TODO: Shall check header version here]
 
@@ -88,7 +86,6 @@ static int get_devtree_dtb(void **dtb_data, size_t *dtb_size) // Note: dtb_data 
     // [TODO: Instead of reading the whole 1 MB, determine device tree size correctly]
     rv = get_devtree_address_from_parttable(&desc, &dtb_addr, dtb_size);
     if(rv == ERR_FPT_CKSUM) rv = 0; // Fallback to default
-printf("dt_offset=%d (%x), size=%d (%x)\n",dtb_addr,dtb_addr,*dtb_size,*dtb_size);
 
     *dtb_data = NULL;
     if(!rv) if((*dtb_data = malloc(*dtb_size)) == NULL) rv = ERR_ENOMEM;
