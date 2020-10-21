@@ -37,6 +37,7 @@ Run-time dependencies:
 * Kernel driver `at24` should be available prior to running
 * Kernel driver `spidev` or `mtd` (depending on build flavor) should be loaded before running
 * Directory `/var/volatile` must exist
+* SPI flash should be connected (in case of BMC, GPIO_SPI_CONNECT should be in 1)
 
 Output files:
 
