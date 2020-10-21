@@ -22,5 +22,5 @@ int main()
         return rv;
     }
 
-    return 0;//system("dtc -I dtb -O dts -o /var/volatile/motherboard_devtree.dts /var/volatile/motherboard_devtree.dtb");
+    return system("dtc -I dtb -O dts -o /var/volatile/motherboard_devtree.dts /var/volatile/motherboard_devtree.dtb");
 }
