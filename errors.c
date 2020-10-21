@@ -37,6 +37,8 @@ struct dict_t errmsgs[] =
 
     { ERR_DTB_FILE,      "Can't open DTB file" },
     { ERR_DTB_FWRITE,    "Can't write DTB file" },
+    { ERR_DTB_MAGIC,     "DTB data magic number is bad" },
+    { ERR_DTB_OVERSIZE,  "Oversized DTB information" },
 
     { 0, "" }
 };

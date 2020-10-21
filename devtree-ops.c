@@ -1,5 +1,6 @@
 #include "errors.h"
 #include "spi-ops.h"
+#include <endian.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -74,20 +75,37 @@ static int get_devtree_address_from_parttable(struct spi_desc_t *desc, off_t *dt
     return ERR_FPT_OVERRUN;
 }
 
+static int check_dtb_consistency(struct spi_desc_t *desc, off_t dtb_addr, size_t *dtb_size)
+{
+    int rv;
+    uint32_t dtb_magic, dtb_realsize;
+
+    if((rv = spi_read(desc, &dtb_magic, dtb_addr, sizeof(uint32_t))) != 0) return rv;
+    if(be32toh(dtb_magic) != 0xd00dfeed) return ERR_DTB_MAGIC;
+
+    if((rv = spi_read(desc, &dtb_realsize, dtb_addr + sizeof(uint32_t), sizeof(uint32_t))) != 0) return rv;
+    dtb_realsize = be32toh(dtb_realsize);
+    if (dtb_realsize > *dtb_size) return ERR_DTB_OVERSIZE;
+
+    *dtb_size = dtb_realsize;
+    return 0;
+}
+
 static int get_devtree_dtb(void **dtb_data, size_t *dtb_size) // Note: dtb_data should be freed even on error
 {
     int rv;
-    struct spi_desc_t desc;
 
+    struct spi_desc_t desc;
     if((rv = spi_init(&desc)) != 0) return rv;
 
     off_t dtb_addr = DTB_DEFAULTADDR;
     *dtb_size = DTB_DEFAULTSIZE;
-    // [TODO: Instead of reading the whole 1 MB, determine device tree size correctly]
+
     rv = get_devtree_address_from_parttable(&desc, &dtb_addr, dtb_size);
     if(rv == ERR_FPT_CKSUM) rv = 0; // Fallback to default
 
-    *dtb_data = NULL;
+    if(!rv) rv = check_dtb_consistency(&desc, dtb_addr, dtb_size);
+
     if(!rv) if((*dtb_data = malloc(*dtb_size)) == NULL) rv = ERR_ENOMEM;
     if(!rv) rv = spi_read(&desc, *dtb_data, dtb_addr, *dtb_size);
     spi_deinit(&desc);
@@ -98,16 +116,16 @@ int get_devtree(const char *outputfile)
 {
     void *dtb_data = NULL;
     size_t dtb_size;
-    FILE *f;
+    FILE *f = NULL;
     int rv = 0;
 
-    if ((f = fopen(outputfile, "w")) == NULL) return ERR_DTB_FILE;
-
     rv = get_devtree_dtb(&dtb_data, &dtb_size);
+
+    if (!rv) if ((f = fopen(outputfile, "w")) == NULL) rv = ERR_DTB_FILE;
     if (!rv) if (fwrite(dtb_data, dtb_size, 1, f) != 1) rv = ERR_DTB_FWRITE;
 
     free(dtb_data);
-    fclose(f);
+    if(f) fclose(f);
 
     return rv;
 }
