@@ -47,7 +47,7 @@ printf("pt_offset=%d (%x)\n",pt_offset,pt_offset);
     uint32_t crc = pt_header.pt_cksum.crc32;
     memset(&pt_header.pt_cksum, 0, sizeof(pt_header.pt_cksum));
 printf("%x, %x\n",crc, crc32(crc32(0L, Z_NULL, 0), (Bytef *)&pt_header, sizeof(pt_header)));
-    if (crc != crc32(crc32(0L, Z_NULL, 0), (Bytef *)&pt_header, sizeof(pt_header))) return ERR_FPT_CKSUM;
+//    if (crc != crc32(crc32(0L, Z_NULL, 0), (Bytef *)&pt_header, sizeof(pt_header))) return ERR_FPT_CKSUM;
     // [TODO: Shall check header version here]
 
     for(uint32_t i = 0; i < pt_header.pt_n_entries; ++i)
@@ -64,7 +64,7 @@ printf("%x, %x\n",crc, crc32(crc32(0L, Z_NULL, 0), (Bytef *)&pt_header, sizeof(p
         if((rv = spi_read(desc, &pt_entry, pt_offset + sizeof(pt_header) + i * sizeof(pt_entry), sizeof(pt_entry))) != 0) return rv;
         uint32_t crc = pt_entry.pte_cksum.crc32;
         memset(&pt_entry.pte_cksum, 0, sizeof(pt_entry.pte_cksum));
-        if (crc != crc32(crc32(0L, Z_NULL, 0), (Bytef *)&pt_entry, sizeof(pt_entry))) return ERR_FPT_PTE_CKSUM;
+//        if (crc != crc32(crc32(0L, Z_NULL, 0), (Bytef *)&pt_entry, sizeof(pt_entry))) return ERR_FPT_PTE_CKSUM;
 
         if (pt_entry.pte_signature == DTB_SIGNATURE)
         {
