@@ -1,1 +1,45 @@
-files/README
+== Build flavors
+
+* ARM (OpenBMC) binary: uses `mtd` driver to access SPI flash
+* Elbrus (e2k) binary: uses `spidev` driver to access SPI flash
+
+== Build
+
+Make targets:
+
+* `make`: Build `mcst-fruid` executable
+* `make install`: install it to /usr/local/libexec
+* `make uninstall`: remove it from /usr/local/libexec
+* `make clean`: clean build area
+
+Make variables:
+
+* `V`: enable verbose mode (1 to enable, 0 (default) to disable)
+* `PREFIX`: set another prefix instead of default `/usr/local`
+* `DESTDIR`: install to `$(DESTDIR)/$(PREFIX)` instead of `$(PREFIX)`
+
+Build-time dependencies:
+
+* `zlib`
+* `libi2c` (from `i2c-tools`)
+
+== Run
+
+Binary is to be run without parameters.
+
+No interaction with `stdin` or `stdout` is presumed, except for error messages to `stderr`.
+
+Run-time dependencies:
+
+* All build-time dependencies (shared libraries)
+* `dtc` (from kernel sources)
+* Kernel driver `i2c-dev` should be loaded before running
+* Kernel driver `at24` should be available prior to running
+* Kernel driver `spidev` or `mtd` (depending on build flavor) should be loaded before running
+* Directory `/var/volatile` must exist
+
+Output files:
+
+* `/var/volatile/motherboard_info.xml`: motherboard FRU information in XML format
+* `/var/volatile/motherboard_devtree.dtb`: binary motherboard device tree
+* `/var/volatile/motherboard_devtree.dts`: decompiled motherboard device tree

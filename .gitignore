@@ -1,2 +1,2 @@
-files/*.o
-files/mcst-fruid
+*.o
+mcst-fruid
