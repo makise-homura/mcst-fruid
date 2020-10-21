@@ -98,7 +98,7 @@ static int read_tlb_field(struct i2c_desc_t *desc, char **buf, off_t *offset)
             // [TODO: We expect UTF-8 as encoding of these fields. It may be the wrong assumption!]
             if((*buf = malloc(size + 1)) == NULL) return ERR_ENOMEM; // Should be freed by calling function even on error
             if((rv = i2c_read(desc, *buf, *offset, size)) != 0) return rv;
-            (*buf)[size + 1] = '\0';
+            (*buf)[size] = '\0';
             *offset += size;
             break;
     }
