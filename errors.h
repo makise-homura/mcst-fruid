@@ -30,6 +30,7 @@ enum
     ERR_SPI_READ,      // Can't read SPI flash device
     ERR_SPI_CLOSE,     // Can't close SPI flash device
 
+    ERR_FPT_MAGIC,     // Flash partition table not detected
     ERR_FPT_CKSUM,     // Flash partition table checksum is bad
     ERR_FPT_VERSION,   // Unsupported flash partition table version
     ERR_FPT_PTE_CKSUM, // Partition table entry checksum is bad

@@ -10,6 +10,10 @@
 #define DTB_SIGNATURE   0xff000003
 #define DTB_DEFAULTADDR 0x00700000
 #define DTB_DEFAULTSIZE 0x00100000
+#define DTB_MAGIC       0xd00dfeed
+
+#define FPT_SIGNATURE   0xb007e2e2
+#define FPT_SUPPORTED_VERSION 1
 
 typedef union
 {
@@ -33,7 +37,7 @@ static int get_devtree_address_from_parttable(struct spi_desc_t *desc, off_t *dt
 
     struct __attribute__((__packed__)) pt_header_t
     {
-        char pt_signature[4];
+        uint32_t pt_signature;
         uint32_t pt_version;
         uint32_t pt_n_entries;
         cksum256_t pt_cksum;
@@ -45,9 +49,10 @@ static int get_devtree_address_from_parttable(struct spi_desc_t *desc, off_t *dt
     if((rv = get_pt_offset(desc, &pt_offset)) != 0) return rv;
     if((rv = spi_read(desc, &pt_header, pt_offset, sizeof(pt_header))) != 0) return rv;
     uint32_t crc = pt_header.pt_cksum.crc32;
+    if (pt_header.pt_signature != FPT_SIGNATURE) return ERR_FPT_MAGIC;
     memset(&pt_header.pt_cksum, 0, sizeof(pt_header.pt_cksum));
 //    if (crc != crc32(crc32(0L, Z_NULL, 0), (Bytef *)&pt_header, sizeof(pt_header))) return ERR_FPT_CKSUM;
-    // [TODO: Shall check header version here]
+    if (pt_header.pt_version > FPT_SUPPORTED_VERSION) return ERR_FPT_VERSION;
 
     for(uint32_t i = 0; i < pt_header.pt_n_entries; ++i)
     {
@@ -81,7 +86,7 @@ static int check_dtb_consistency(struct spi_desc_t *desc, off_t dtb_addr, size_t
     uint32_t dtb_magic, dtb_realsize;
 
     if((rv = spi_read(desc, &dtb_magic, dtb_addr, sizeof(uint32_t))) != 0) return rv;
-    if(be32toh(dtb_magic) != 0xd00dfeed) return ERR_DTB_MAGIC;
+    if(be32toh(dtb_magic) != DTB_MAGIC) return ERR_DTB_MAGIC;
 
     if((rv = spi_read(desc, &dtb_realsize, dtb_addr + sizeof(uint32_t), sizeof(uint32_t))) != 0) return rv;
     dtb_realsize = be32toh(dtb_realsize);
@@ -102,7 +107,7 @@ static int get_devtree_dtb(void **dtb_data, size_t *dtb_size) // Note: dtb_data 
     *dtb_size = DTB_DEFAULTSIZE;
 
     rv = get_devtree_address_from_parttable(&desc, &dtb_addr, dtb_size);
-    if(rv == ERR_FPT_CKSUM) rv = 0; // Fallback to default
+    if(rv == ERR_FPT_MAGIC) rv = 0; // Fallback to default
 
     if(!rv) rv = check_dtb_consistency(&desc, dtb_addr, dtb_size);
 
