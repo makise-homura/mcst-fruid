@@ -1,11 +1,11 @@
 #include "errors.h"
 #include "spi-ops.h"
+#include "cksum-ops.h"
 #include <endian.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <zlib.h>
 
 #define DTB_SIGNATURE   0xff000003
 #define DTB_DEFAULTADDR 0x00700000
@@ -51,7 +51,7 @@ static int get_devtree_address_from_parttable(struct spi_desc_t *desc, off_t *dt
     uint32_t crc = pt_header.pt_cksum.crc32;
     if (pt_header.pt_signature != FPT_SIGNATURE) return ERR_FPT_MAGIC;
     memset(&pt_header.pt_cksum, 0, sizeof(pt_header.pt_cksum));
-//    if (crc != crc32(crc32(0L, Z_NULL, 0), (Bytef *)&pt_header, sizeof(pt_header))) return ERR_FPT_CKSUM;
+    if (crc != cksum((unsigned char *)&pt_header, sizeof(pt_header))) return ERR_FPT_CKSUM;
     if (pt_header.pt_version > FPT_SUPPORTED_VERSION) return ERR_FPT_VERSION;
 
     for(uint32_t i = 0; i < pt_header.pt_n_entries; ++i)
@@ -68,7 +68,7 @@ static int get_devtree_address_from_parttable(struct spi_desc_t *desc, off_t *dt
         if((rv = spi_read(desc, &pt_entry, pt_offset + sizeof(pt_header) + i * sizeof(pt_entry), sizeof(pt_entry))) != 0) return rv;
         uint32_t crc = pt_entry.pte_cksum.crc32;
         memset(&pt_entry.pte_cksum, 0, sizeof(pt_entry.pte_cksum));
-//        if (crc != crc32(crc32(0L, Z_NULL, 0), (Bytef *)&pt_entry, sizeof(pt_entry))) return ERR_FPT_PTE_CKSUM;
+        if (crc != cksum((unsigned char *)&pt_entry, sizeof(pt_entry))) return ERR_FPT_PTE_CKSUM;
 
         if (pt_entry.pte_signature == DTB_SIGNATURE)
         {
