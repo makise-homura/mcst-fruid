@@ -6,21 +6,22 @@
 
 int main()
 {
-    int rv;
+    int rv1, rv2, rv3;
 
-    rv = get_fruid("/var/volatile/motherboard_info.xml");
-    if (rv)
+    rv1 = get_fruid("/var/volatile/motherboard_info.xml");
+    if (rv1)
     {
-        print_err(rv, "while reading FRU ID information");
-        return rv;
+        print_err(rv1, "while reading FRU ID information");
     }
 
-    rv = get_devtree("/var/volatile/motherboard_devtree.dtb");
-    if (rv)
+    rv2 = get_devtree("/var/volatile/motherboard_devtree.dtb");
+    if (rv2)
     {
-        print_err(rv, "while reading device tree");
-        return rv;
+        print_err(rv2, "while reading device tree");
     }
-
-    return system("dtc -I dtb -O dts -o /var/volatile/motherboard_devtree.dts /var/volatile/motherboard_devtree.dtb");
+    else
+    {
+        rv3 = system("dtc -I dtb -O dts -o /var/volatile/motherboard_devtree.dts /var/volatile/motherboard_devtree.dtb");
+    }
+    return rv1 + rv2 + rv3;
 }
