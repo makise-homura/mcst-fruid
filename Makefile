@@ -24,7 +24,7 @@ all: $(BINARYNAME)
 
 $(BINARYNAME): $(addsuffix .o,$(OBJECTS))
 	@$(LOG) LD\\t$(BINARYNAME)
-	$(Q)$(CC) -o $(BINARYNAME) $^ $(LIBS)
+	$(Q)$(CC) -o $(BINARYNAME) $^ $(LIBS) $(LDFLAGS)
 
 %.o: %.c
 	@$(LOG) CC\\t$@
