@@ -1,6 +1,5 @@
 #include "errors.h"
 #include "spi-ops.h"
-#include <cksum.h>
 #include <endian.h>
 #include <stdio.h>
 #include <stdint.h>
