@@ -48,10 +48,8 @@ static int get_devtree_address_from_parttable(struct spi_desc_t *desc, off_t *dt
     off_t pt_offset;
     if((rv = get_pt_offset(desc, &pt_offset)) != 0) return rv;
     if((rv = spi_read(desc, &pt_header, pt_offset, sizeof(pt_header))) != 0) return rv;
-    uint32_t crc = pt_header.pt_cksum.crc32;
     if (pt_header.pt_signature != FPT_SIGNATURE) return ERR_FPT_MAGIC;
     memset(&pt_header.pt_cksum, 0, sizeof(pt_header.pt_cksum));
-    if (crc != cksum((unsigned char *)&pt_header, sizeof(pt_header))) return ERR_FPT_CKSUM;
     if (pt_header.pt_version > FPT_SUPPORTED_VERSION) return ERR_FPT_VERSION;
 
     for(uint32_t i = 0; i < pt_header.pt_n_entries; ++i)
@@ -66,9 +64,7 @@ static int get_devtree_address_from_parttable(struct spi_desc_t *desc, off_t *dt
         } pt_entry;
 
         if((rv = spi_read(desc, &pt_entry, pt_offset + sizeof(pt_header) + i * sizeof(pt_entry), sizeof(pt_entry))) != 0) return rv;
-        uint32_t crc = pt_entry.pte_cksum.crc32;
         memset(&pt_entry.pte_cksum, 0, sizeof(pt_entry.pte_cksum));
-        if (crc != cksum((unsigned char *)&pt_entry, sizeof(pt_entry))) return ERR_FPT_PTE_CKSUM;
 
         if (pt_entry.pte_signature == DTB_SIGNATURE)
         {

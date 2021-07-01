@@ -1,7 +1,7 @@
 BINARYNAME = mcst-fruid
 
 OBJECTS = errors devtree-ops dict-ops fruid-ops i2c-ops mcst-fruid
-LIBS = -li2c -lcksum
+LIBS = -li2c
 
 PREFIX ?= /usr/local
 DESTDIR ?=
