@@ -5,8 +5,14 @@ PR = "r1"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
+inherit systemd
+inherit features_check
+
+REQUIRED_DISTRO_FEATURES = "systemd"
+SYSTEMD_SERVICE_${PN} = "mcst-fruid.service"
+
 DEPENDS += "i2c-tools"
-RDEPENDS_${PN} += "dtc"
+RDEPENDS_${PN} += "systemd dtc"
 
 SRC_URI = "git://github.com/makise-homura/mcst-fruid.git;protocol=https"
 SRCREV = "${AUTOREV}"
@@ -14,8 +20,10 @@ SRCREV = "${AUTOREV}"
 S = "${WORKDIR}/git"
 
 do_install() {
-  install -d ${D}/usr/libexec
-  install -m 755 mcst-fruid ${D}/usr/libexec
+  install -d ${D}/libexec
+  install -d ${D}${systemd_system_unitdir}
+  install -m 755 mcst-fruid ${D}/libexec
+  install -m 644 ${S}/mcst-fruid.service ${D}${systemd_system_unitdir}
 }
 
-FILES_${PN} = "/usr/libexec/mcst-fruid"
+FILES_${PN} = "/libexec/mcst-fruid ${systemd_system_unitdir}"
