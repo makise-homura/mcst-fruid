@@ -23,6 +23,7 @@ struct dict_t errmsgs[] =
     { ERR_I2C_READ,      "Can't read I2C EEPROM" },
     { ERR_I2C_CLOSE,     "Can't close I2C bus" },
 
+    { ERR_SPI_NODEV,     "Can't find SPI flash device" },
     { ERR_SPI_OPEN,      "Can't open SPI flash device" },
     { ERR_SPI_DETECT,    "Can't detect ID of SPI flash device" },
     { ERR_SPI_SIZE,      "Can't determine size of SPI flash device" },
