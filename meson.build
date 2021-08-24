@@ -1,6 +1,5 @@
 project('mcst-fruid', 'c')
 
-exe_cflags = []
 cc = meson.get_compiler('c')
 cc.find_library('i2c', required: true, has_headers: 'i2c/smbus.h')
 
