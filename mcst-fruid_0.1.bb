@@ -24,7 +24,9 @@ do_install() {
   install -d ${D}/sbin
   install -d ${D}${systemd_system_unitdir}
   install -m 755 mcst-fruid ${D}/sbin
+  install -m 755 get-fruid ${D}/sbin
+  install -m 755 get-devtree ${D}/sbin
   install -m 644 ${S}/mcst-fruid.service ${D}${systemd_system_unitdir}
 }
 
-FILES_${PN} = "/sbin/mcst-fruid ${systemd_system_unitdir}"
+FILES_${PN} = "/sbin ${systemd_system_unitdir}"
