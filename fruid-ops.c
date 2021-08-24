@@ -272,6 +272,9 @@ int get_fruid(const char *filename)
 
     if(reimu_traverse_all_i2c(&paddr, find_i2c_dev, 0) > 2) return ERR_I2C_TRAVERSE;
 
+    if (i2c_addr.detected) reimu_message(stdout, "FRU ID EEPROM detected at bus %d, addr 0x%02x\n", i2c_addr.bus, i2c_addr.slave);
+    else reimu_message(stdout, "FRU ID EEPROM not detected, using defaults: bus %d, addr 0x%02x\n", i2c_addr.bus, i2c_addr.slave);
+
     if((rv = i2c_init(&desc, i2c_addr.bus, i2c_addr.slave)) != 0) return rv;
 
     rv = i2c_read(&desc, &fru_common_header, 0, 8);

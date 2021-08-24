@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <reimu.h>
 
 #define DTB_SIGNATURE   0xff000003
 #define DTB_DEFAULTADDR 0x00700000
@@ -102,7 +103,15 @@ static int get_devtree_dtb(void **dtb_data, size_t *dtb_size) // Note: dtb_data 
     *dtb_size = DTB_DEFAULTSIZE;
 
     rv = get_devtree_address_from_parttable(&desc, &dtb_addr, dtb_size);
-    if(rv == ERR_FPT_MAGIC) rv = 0; // Fallback to default
+    if (!rv)
+    {
+        reimu_message(stdout, "DTB partition detected at address 0x%08lx, length %lu\n", dtb_addr, *dtb_size);
+    }
+    else if(rv == ERR_FPT_MAGIC)
+    {
+        reimu_message(stdout, "No partition table found, using defaults: DTB address 0x%08lx, length %lu\n", dtb_addr, *dtb_size);
+        rv = 0; // Fallback to default
+    }
 
     if(!rv) rv = check_dtb_consistency(&desc, dtb_addr, dtb_size);
 

@@ -24,8 +24,9 @@ src_devtree = ['errors.c', 'dict-ops.c', 'devtree-ops.c', src_spi, 'get-devtree.
 src_fruid   = ['errors.c', 'dict-ops.c', 'fruid-ops.c', 'i2c-ops.c', 'get-fruid.c']
 src_all     = ['errors.c', 'dict-ops.c', 'devtree-ops.c', src_spi, 'fruid-ops.c', 'i2c-ops.c', 'mcst-fruid.c']
 
+libreimu     = dependency('reimu',     fallback : ['libreimu', 'libreimu'])
 libreimu_fdt = dependency('reimu_fdt', fallback : ['libreimu', 'libreimu_fdt'])
 
-executable('get-devtree', src_devtree, install: true, install_dir: 'sbin')
-executable('get-fruid',   src_fruid,   dependencies: libreimu_fdt, install: true, install_dir: 'sbin')
-executable('mcst-fruid',  src_all,     dependencies: libreimu_fdt, install: true, install_dir: 'sbin')
+executable('get-devtree', src_devtree, dependencies: [ libreimu ], install: true, install_dir: 'sbin')
+executable('get-fruid',   src_fruid,   dependencies: [ libreimu, libreimu_fdt ], install: true, install_dir: 'sbin')
+executable('mcst-fruid',  src_all,     dependencies: [ libreimu, libreimu_fdt ], install: true, install_dir: 'sbin')
