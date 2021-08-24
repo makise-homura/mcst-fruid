@@ -3,7 +3,7 @@ Description=Get FRU ID data and Device Tree from Motherboard
 After=syslog.target
 
 [Service]
-ExecStart=/libexec/mcst-fruid
+ExecStart=/sbin/mcst-fruid
 Type=oneshot
 RemainAfterExit=yes
 

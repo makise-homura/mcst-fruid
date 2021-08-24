@@ -23,4 +23,4 @@ if systemd.found()
         install_dir: systemd.get_pkgconfig_variable('systemdsystemunitdir'))
 endif
 
-executable('mcst-fruid', src, install: true, install_dir: 'libexec')
+executable('mcst-fruid', src, install: true, install_dir: 'sbin')

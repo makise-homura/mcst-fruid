@@ -21,10 +21,10 @@ SRCREV = "${AUTOREV}"
 S = "${WORKDIR}/git"
 
 do_install() {
-  install -d ${D}/libexec
+  install -d ${D}/sbin
   install -d ${D}${systemd_system_unitdir}
-  install -m 755 mcst-fruid ${D}/libexec
+  install -m 755 mcst-fruid ${D}/sbin
   install -m 644 ${S}/mcst-fruid.service ${D}${systemd_system_unitdir}
 }
 
-FILES_${PN} = "/libexec/mcst-fruid ${systemd_system_unitdir}"
+FILES_${PN} = "/sbin/mcst-fruid ${systemd_system_unitdir}"

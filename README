@@ -8,8 +8,8 @@
 Make targets:
 
 * `make`: Build `mcst-fruid` executable
-* `make install`: install it to /usr/local/libexec
-* `make uninstall`: remove it from /usr/local/libexec
+* `make install`: install it to /usr/local/sbin
+* `make uninstall`: remove it from /usr/local/sbin
 * `make clean`: clean build area
 
 Make variables:
