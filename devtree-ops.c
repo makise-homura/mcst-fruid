@@ -23,7 +23,7 @@ typedef union
 static int get_pt_offset(struct spi_desc_t *desc, off_t *offset)
 {
     int rv = 0;
-    off_t flashsize = 0;
+    size_t flashsize = 0;
     size_t flashsector = 0;
     spi_get_sectorsize(desc, &flashsector); // For now it never fails
     if ((rv = spi_get_size(desc, &flashsize)) != 0) return rv;
