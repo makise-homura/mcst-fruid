@@ -16,6 +16,7 @@ struct dict_t errmsgs[] =
     { ERR_FRU_FWRITE,               "Can't write FRU data XML file" },
     { ERR_FRU_EMPTYTLB,             "Type-Length Byte for empty field" },
 
+    { ERR_I2C_TRAVERSE,  "Can't traverse I2C bus to find EEPROM" },
     { ERR_I2C_OPEN,      "Can't open I2C bus" },
     { ERR_I2C_CREATE,    "Can't create EEPROM instance on I2C bus" },
     { ERR_I2C_SLAVE,     "Can't select EEPROM slave device on I2C bus" },

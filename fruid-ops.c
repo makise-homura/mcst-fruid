@@ -7,9 +7,10 @@
 #include <unistd.h>
 #include <string.h>
 #include <time.h>
+#include <reimu.h>
 
-#define FRUID_I2C_BUS 3
-#define FRUID_I2C_SLAVE 0x57
+#define FRUID_I2C_DEFAULT_BUS 3
+#define FRUID_I2C_DEFAULT_SLAVE 0x57
 
 struct info_area_def_t
 {
@@ -233,6 +234,21 @@ static int dump_fru_xia(struct i2c_desc_t *desc, FILE *f, off_t offset, const ch
     }
 }
 
+struct i2c_addr_t { int detected; int bus; int slave; };
+
+static int find_i2c_dev(int unused, const char *pcompatible, int node, int bus, int reg, const char *label, const void *data)
+{
+    const void *pdata = *(void * const *)data;
+    struct i2c_addr_t *i2c_addr = (struct i2c_addr_t *)pdata;
+    if (!strcmp(pcompatible, "24c128") && !strcmp(label, "FRUID"))
+    {
+        i2c_addr->detected = 1;
+        i2c_addr->bus = bus;
+        i2c_addr->slave = reg;
+    }
+    return 0;
+}
+
 int get_fruid(const char *filename)
 {
     FILE *f;
@@ -251,7 +267,12 @@ int get_fruid(const char *filename)
         uint8_t cksum;
     } fru_common_header;
 
-    if((rv = i2c_init(&desc, FRUID_I2C_BUS, FRUID_I2C_SLAVE)) != 0) return rv;
+    struct i2c_addr_t i2c_addr = { .detected = 0, .bus = FRUID_I2C_DEFAULT_BUS, .slave = FRUID_I2C_DEFAULT_SLAVE };
+    const void* paddr = &i2c_addr;
+
+    if(reimu_traverse_all_i2c(&paddr, find_i2c_dev, 0) > 2) return ERR_I2C_TRAVERSE;
+
+    if((rv = i2c_init(&desc, i2c_addr.bus, i2c_addr.slave)) != 0) return rv;
 
     rv = i2c_read(&desc, &fru_common_header, 0, 8);
     if(!rv) if(fru_cksum((uint8_t *)&fru_common_header, 8) != 0) rv = ERR_FRU_CKSUM;
