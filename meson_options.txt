@@ -1,0 +1,2 @@
+option ( 'spi_backend', type: 'combo', value: 'auto', choices: [ 'auto', 'mtd', 'spidev' ],
+    description: 'Backend to talk to SPI flash (auto is spidev on e2k, mtd otherwise)')
