@@ -5,22 +5,29 @@
 
 == Build
 
-Make targets:
+You should have meson to build this.
 
-* `make`: Build `mcst-fruid` executable
-* `make install`: install it to /usr/local/sbin
-* `make uninstall`: remove it from /usr/local/sbin
-* `make clean`: clean build area
+* `mkdir build; cd build; meson ..`: create build area and configure project
 
-Make variables:
+You may specify SPI backend parameter to meson:
 
-* `V`: enable verbose mode (1 to enable, 0 (default) to disable)
-* `PREFIX`: set another prefix instead of default `/usr/local`
-* `DESTDIR`: install to `$(DESTDIR)/$(PREFIX)` instead of `$(PREFIX)`
+* `-Dspi_backend=mtd`: uses `mtd` driver to access SPI flash
+* `-Dspi_backend=spidev`: uses `spidev` driver to access SPI flash
+* `-Dspi_backend=auto` (default): automatically detect driver to access SPI flash
+
+In the latest case, elbrus (e2k) uses `spidev`, and all other architectures use `mtd`.
+
+Thewn you can make targets:
+
+* `ninja`: Build `mcst-fruid` executable
+* `ninja install`: install binary to /usr/local/sbin (and systemd service, if available)
+* `ninja uninstall`: remove binary (and systemd service, if possible)
+* `cd ..; rm -rf build`: remove build area
+
+You may specify `--prefix` to meson to override default `/usr/local`.
 
 Build-time dependencies:
 
-* `zlib`
 * `libi2c` (from `i2c-tools`)
 
 == Run
