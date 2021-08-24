@@ -11,7 +11,7 @@ inherit features_check
 
 REQUIRED_DISTRO_FEATURES = "systemd"
 SYSTEMD_SERVICE_${PN} = "mcst-fruid.service"
-DEPENDS += "systemd i2c-tools"
+DEPENDS += "libreimu systemd i2c-tools"
 RDEPENDS_${PN} += "dtc"
 
 SRC_URI = "git://github.com/makise-homura/mcst-fruid.git;protocol=https"
