@@ -6,13 +6,7 @@
 
 int main()
 {
-    int rv1, rv2, rv3;
-
-    rv1 = get_fruid("/var/volatile/motherboard_info.xml");
-    if (rv1)
-    {
-        print_err(rv1, "while reading FRU ID information");
-    }
+    int rv1, rv2, rv3 = 0;
 
     rv2 = get_devtree("/var/volatile/motherboard_devtree.dtb");
     if (rv2)
@@ -23,5 +17,12 @@ int main()
     {
         rv3 = system("dtc -I dtb -O dts -o /var/volatile/motherboard_devtree.dts /var/volatile/motherboard_devtree.dtb");
     }
+
+    rv1 = get_fruid("/var/volatile/motherboard_info.xml");
+    if (rv1)
+    {
+        print_err(rv1, "while reading FRU ID information");
+    }
+
     return rv1 + rv2 + rv3;
 }
