@@ -52,11 +52,12 @@ int i2c_read(struct i2c_desc_t *desc, void *buf, off_t offset, size_t size)
         desc->seek = offset;
     }
 
+    char *cbuf = buf;
     while (size > 0)
     {
         size_t readsize = (size > I2C_BLOCKSIZE) ? I2C_BLOCKSIZE : size;
-        if (read(desc->fd, buf, readsize) < 0) return ERR_I2C_READ;
-        buf += readsize;
+        if (read(desc->fd, cbuf, readsize) < 0) return ERR_I2C_READ;
+        cbuf += readsize;
         desc->seek += readsize;
         size -= readsize;
     }

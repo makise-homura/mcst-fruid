@@ -7,12 +7,12 @@
 #include <string.h>
 #include <reimu.h>
 
-#define DTB_SIGNATURE   0xff000003
-#define DTB_DEFAULTADDR 0x00700000
-#define DTB_DEFAULTSIZE 0x00100000
-#define DTB_MAGIC       0xd00dfeed
+#define DTB_SIGNATURE   0xff000003UL
+#define DTB_DEFAULTADDR 0x00700000UL
+#define DTB_DEFAULTSIZE 0x00100000UL
+#define DTB_MAGIC       0xd00dfeedUL
 
-#define FPT_SIGNATURE   0xb007e2e2
+#define FPT_SIGNATURE   0xb007e2e2UL
 #define FPT_SUPPORTED_VERSION 1
 
 typedef union

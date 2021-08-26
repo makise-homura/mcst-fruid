@@ -77,7 +77,7 @@ static int read_tlb_field(struct i2c_desc_t *desc, char **buf, off_t *offset)
         case TLB_BINARY:
             if((*buf = malloc(size * 6)) == NULL) return ERR_ENOMEM; // Should be freed by calling function even on error
             char *out = *buf;
-            for(int i = 0; i < size; ++i)
+            for(size_t i = 0; i < size; ++i)
             {
                 uint8_t byte;
                 if((rv = i2c_read(desc, &byte, *offset, 1)) != 0) return rv;
@@ -144,7 +144,7 @@ static int dump_fru_iua(struct i2c_desc_t *desc, FILE *f, off_t offset)
     return rv;
 }
 
-static int dump_fru_mra(struct i2c_desc_t *desc, FILE *f, off_t offset)
+static int dump_fru_mra(struct i2c_desc_t *desc __attribute__((unused)), FILE *f __attribute__((unused)), off_t offset __attribute__((unused)))
 {
     if(!offset) return 0;
 
@@ -236,7 +236,7 @@ static int dump_fru_xia(struct i2c_desc_t *desc, FILE *f, off_t offset, const ch
 
 struct i2c_addr_t { int detected; int bus; int slave; };
 
-static int find_i2c_dev(int unused, const char *pcompatible, int node, int bus, int reg, const char *label, const void *data)
+static int find_i2c_dev(int unused __attribute__((unused)), const char *pcompatible, int unused2 __attribute__((unused)), int bus, int reg, const char *label, const void *data)
 {
     const void *pdata = *(void * const *)data;
     struct i2c_addr_t *i2c_addr = (struct i2c_addr_t *)pdata;

@@ -37,7 +37,7 @@ int spi_init(struct spi_desc_t *desc)
     return 0;
 }
 
-int spi_read(struct spi_desc_t *desc, void *buf, off_t offset, size_t size)
+int spi_read(struct spi_desc_t *desc, void *buf, off_t offset, ssize_t size)
 {
     if (desc->seek != offset)
     {
@@ -54,7 +54,7 @@ int spi_deinit(struct spi_desc_t *desc)
     return close(desc->fd) ? ERR_SPI_CLOSE : 0;
 }
 
-int spi_get_sectorsize(struct spi_desc_t *desc, size_t *size)
+int spi_get_sectorsize(struct spi_desc_t *desc __attribute__((unused)), size_t *size)
 {
     // Currently we are hardware-bound to flash chips with 4k sector.
     // There's no way to found it out from BMC side.

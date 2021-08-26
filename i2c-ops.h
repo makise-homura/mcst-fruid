@@ -6,7 +6,7 @@
 struct i2c_desc_t
 {
     int fd;
-    size_t seek;
+    off_t seek;
 };
 
 int i2c_init(struct i2c_desc_t *desc, int bus, int slave);
