@@ -270,7 +270,9 @@ int get_fruid(const char *filename)
     struct i2c_addr_t i2c_addr = { .detected = 0, .bus = FRUID_I2C_DEFAULT_BUS, .slave = FRUID_I2C_DEFAULT_SLAVE };
     const void* paddr = &i2c_addr;
 
-    if(reimu_traverse_all_i2c(&paddr, find_i2c_dev, 0) > 2) return ERR_I2C_TRAVERSE;
+    reimu_message(stderr, "Searching FRU ID EEPROM in DTB: ");
+    if((rv = reimu_traverse_all_i2c(&paddr, find_i2c_dev, 0) > 2)) return ERR_I2C_TRAVERSE;
+    if(!rv) reimu_message(stderr, "Finished.\n");
 
     if (i2c_addr.detected) reimu_message(stdout, "FRU ID EEPROM detected at bus %d, addr 0x%02x\n", i2c_addr.bus, i2c_addr.slave);
     else reimu_message(stdout, "FRU ID EEPROM not detected, using defaults: bus %d, addr 0x%02x\n", i2c_addr.bus, i2c_addr.slave);
