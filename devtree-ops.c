@@ -105,11 +105,11 @@ static int get_devtree_dtb(void **dtb_data, size_t *dtb_size) // Note: dtb_data 
     rv = get_devtree_address_from_parttable(&desc, &dtb_addr, dtb_size);
     if (!rv)
     {
-        reimu_message(stdout, "DTB partition detected at address 0x%08lx, length %lu\n", dtb_addr, *dtb_size);
+        reimu_message(stdout, "DTB partition detected at address 0x%08lx, length %lu\n", (long)dtb_addr, *dtb_size);
     }
     else if(rv == ERR_FPT_MAGIC)
     {
-        reimu_message(stdout, "No partition table found, using defaults: DTB address 0x%08lx, length %lu\n", dtb_addr, *dtb_size);
+        reimu_message(stdout, "No partition table found, using defaults: DTB address 0x%08lx, length %lu\n", (long)dtb_addr, *dtb_size);
         rv = 0; // Fallback to default
     }
 
