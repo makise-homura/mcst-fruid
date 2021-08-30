@@ -236,7 +236,7 @@ static int dump_fru_xia(struct i2c_desc_t *desc, FILE *f, off_t offset, const ch
 
 struct i2c_addr_t { int detected; int bus; int slave; };
 
-static int find_i2c_dev(int unused __attribute__((unused)), const char *pcompatible, int unused2 __attribute__((unused)), int bus, int reg, const char *label, const void *data)
+static int find_i2c_dev(enum cancel_type_t unused __attribute__((unused)), const char *pcompatible, int unused2 __attribute__((unused)), int bus, int reg, const char *label, const void *data)
 {
     const void *pdata = *(void * const *)data;
     struct i2c_addr_t *i2c_addr = (struct i2c_addr_t *)pdata;
@@ -271,7 +271,7 @@ int get_fruid(const char *filename)
     const void* paddr = &i2c_addr;
 
     reimu_message(stderr, "Searching FRU ID EEPROM in DTB: ");
-    if((rv = reimu_traverse_all_i2c(&paddr, find_i2c_dev, 0)) > 2) return ERR_I2C_TRAVERSE;
+    if((rv = reimu_traverse_all_i2c(&paddr, find_i2c_dev, JUST_PRINT_ERROR)) > 2) return ERR_I2C_TRAVERSE;
     if(!rv) reimu_message(stderr, "Finished.\n");
 
     if (i2c_addr.detected) reimu_message(stdout, "FRU ID EEPROM detected at bus %d, addr 0x%02x\n", i2c_addr.bus, i2c_addr.slave);
