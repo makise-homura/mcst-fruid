@@ -18,7 +18,7 @@ int main()
         rv3 = system("dtc -I dtb -O dts -o /var/volatile/motherboard_devtree.dts /var/volatile/motherboard_devtree.dtb");
     }
 
-    rv1 = get_fruid("/var/volatile/motherboard_info.xml");
+    rv1 = get_fruid("/var/volatile/motherboard_info.xml", -1, -1);
     if (rv1)
     {
         print_err(rv1, "while reading FRU ID information");

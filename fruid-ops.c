@@ -249,7 +249,7 @@ static int find_i2c_dev(enum cancel_type_t unused __attribute__((unused)), const
     return 0;
 }
 
-int get_fruid(const char *filename)
+int get_fruid(const char *filename, int bus, int slave)
 {
     FILE *f;
     int rv = 0;
@@ -268,14 +268,24 @@ int get_fruid(const char *filename)
     } fru_common_header;
 
     struct i2c_addr_t i2c_addr = { .detected = 0, .bus = FRUID_I2C_DEFAULT_BUS, .slave = FRUID_I2C_DEFAULT_SLAVE };
-    const void* paddr = &i2c_addr;
 
-    reimu_message(stderr, "Searching FRU ID EEPROM in DTB: ");
-    if((rv = reimu_traverse_all_i2c(&paddr, find_i2c_dev, JUST_PRINT_ERROR)) > 2) return ERR_I2C_TRAVERSE;
-    if(!rv) reimu_message(stderr, "Finished.\n");
+    if (bus < 0)
+    {
+        const void* paddr = &i2c_addr;
 
-    if (i2c_addr.detected) reimu_message(stdout, "FRU ID EEPROM detected at bus %d, addr 0x%02x\n", i2c_addr.bus, i2c_addr.slave);
-    else reimu_message(stdout, "FRU ID EEPROM not detected, using defaults: bus %d, addr 0x%02x\n", i2c_addr.bus, i2c_addr.slave);
+        reimu_message(stderr, "Searching FRU ID EEPROM in DTB: ");
+        if((rv = reimu_traverse_all_i2c(&paddr, find_i2c_dev, JUST_PRINT_ERROR)) > 2) return ERR_I2C_TRAVERSE;
+        if(!rv) reimu_message(stderr, "Finished.\n");
+
+        if (i2c_addr.detected) reimu_message(stdout, "FRU ID EEPROM detected at bus %d, addr 0x%02x\n", i2c_addr.bus, i2c_addr.slave);
+        else reimu_message(stdout, "FRU ID EEPROM not detected, using defaults: bus %d, addr 0x%02x\n", i2c_addr.bus, i2c_addr.slave);
+    }
+    else
+    {
+        i2c_addr.bus = bus;
+        i2c_addr.slave = slave;
+        reimu_message(stdout, "FRU ID EEPROM forced address: bus %d, addr 0x%02x\n", i2c_addr.bus, i2c_addr.slave);
+    }
 
     if((rv = i2c_init(&desc, i2c_addr.bus, i2c_addr.slave)) != 0) return rv;
 
