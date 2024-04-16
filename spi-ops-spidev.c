@@ -95,8 +95,6 @@ int spi_get_sectorsize(struct spi_desc_t *desc, size_t *size)
 
 int spi_get_size(struct spi_desc_t *desc, size_t *size)
 {
-    int rv = 0;
-
     struct __attribute__((packed))
     {
         uint8_t manufacturer;
