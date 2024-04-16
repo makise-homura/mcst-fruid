@@ -66,7 +66,7 @@ int spi_init(struct spi_desc_t *desc)
     return 0;
 }
 
-int spi_read(struct spi_desc_t *desc, void *buf, off_t offset, size_t size)
+int spi_read(struct spi_desc_t *desc, void *buf, off_t offset, ssize_t size)
 {
     desc->seek = offset;
     while (size > 0)
