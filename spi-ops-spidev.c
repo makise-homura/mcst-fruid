@@ -111,6 +111,8 @@ int spi_get_size(struct spi_desc_t *desc, size_t *size)
 
     if (ioctl(desc->fd, SPI_IOC_MESSAGE(2), spi_msg) == -1) return ERR_SPI_READ;
 
+    if(id.capacity >= 0x20) id.capacity -= 0x06; // At least Micron uses 0x20 after 0x19 instead of 0x1a
+
     switch(id.capacity)
     {
         case 0x15:
